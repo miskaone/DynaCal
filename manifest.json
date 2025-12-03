@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "DynaCal",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Export Dynamous community live events to Google Calendar, Outlook, or ICS files",
   "permissions": [
     "activeTab",
