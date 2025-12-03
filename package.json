@@ -1,0 +1,24 @@
+{
+  "name": "dynacal",
+  "version": "1.0.0",
+  "description": "Chrome extension to export Dynamous community live events to Google Calendar, Outlook, or ICS files",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "build": "webpack --config webpack.config.js",
+    "build:watch": "webpack --config webpack.config.js --watch"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "webpack": "^5.103.0",
+    "webpack-cli": "^6.0.1"
+  },
+  "keywords": [
+    "chrome-extension",
+    "calendar",
+    "circle.so"
+  ],
+  "license": "MIT"
+}
