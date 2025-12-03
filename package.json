@@ -1,6 +1,6 @@
 {
   "name": "dynacal",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Chrome extension to export Dynamous community live events to Google Calendar, Outlook, or ICS files",
   "scripts": {
     "test": "jest",
