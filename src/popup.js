@@ -243,7 +243,31 @@ function createEventCard(event, index) {
     const nudge = document.createElement('span');
     nudge.className = 'rsvp-nudge';
     nudge.textContent = 'RSVP Now';
-    nudge.onclick = () => {
+    nudge.onclick = async () => {
+      const slug = event.slug || slugify(event.title);
+
+      // Track RSVP click to disable export buttons
+      await trackExport(slug, 'rsvp');
+
+      // Disable all export buttons for this event
+      const exportButtons = card.querySelectorAll('.export-buttons button');
+      exportButtons.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add('disabled');
+      });
+
+      // Add RSVP badge
+      if (!card.querySelector('.exported-badge')) {
+        const rsvpBadge = document.createElement('span');
+        rsvpBadge.className = 'exported-badge';
+        rsvpBadge.textContent = 'RSVP';
+        card.appendChild(rsvpBadge);
+      }
+
+      // Show toast
+      showToast('Manage calendar via RSVP page');
+
+      // Open RSVP page
       window.open(
         event.url.startsWith('http')
           ? event.url
@@ -254,11 +278,15 @@ function createEventCard(event, index) {
     card.appendChild(nudge);
   }
 
-  // Show exported badge if any export exists for this event
-  if (event.slug && hasAnyExport(event.slug)) {
+  // Check if RSVP was clicked (disables all export buttons)
+  const slug = event.slug || slugify(event.title);
+  const rsvpClicked = isEventExportedSync(slug, 'rsvp');
+
+  // Show exported/RSVP badge if any export exists for this event
+  if (hasAnyExport(slug)) {
     const exportedBadge = document.createElement('span');
     exportedBadge.className = 'exported-badge';
-    exportedBadge.textContent = 'Exported';
+    exportedBadge.textContent = rsvpClicked ? 'RSVP' : 'Exported';
     card.appendChild(exportedBadge);
   }
 
@@ -270,7 +298,7 @@ function createEventCard(event, index) {
   const googleBtn = document.createElement('button');
   googleBtn.textContent = 'Google';
   googleBtn.dataset.export = 'google';
-  if (event.slug && isEventExportedSync(event.slug, 'google')) {
+  if (rsvpClicked || isEventExportedSync(slug, 'google')) {
     googleBtn.disabled = true;
     googleBtn.classList.add('disabled');
   }
@@ -281,7 +309,7 @@ function createEventCard(event, index) {
   const outlookBtn = document.createElement('button');
   outlookBtn.textContent = 'Outlook';
   outlookBtn.dataset.export = 'outlook';
-  if (event.slug && isEventExportedSync(event.slug, 'outlook')) {
+  if (rsvpClicked || isEventExportedSync(slug, 'outlook')) {
     outlookBtn.disabled = true;
     outlookBtn.classList.add('disabled');
   }
@@ -292,7 +320,7 @@ function createEventCard(event, index) {
   const icsBtn = document.createElement('button');
   icsBtn.textContent = 'ICS';
   icsBtn.dataset.export = 'ics';
-  if (event.slug && isEventExportedSync(event.slug, 'ics')) {
+  if (rsvpClicked || isEventExportedSync(slug, 'ics')) {
     icsBtn.disabled = true;
     icsBtn.classList.add('disabled');
   }

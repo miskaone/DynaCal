@@ -106,6 +106,16 @@ Now you can access DynaCal with one click!
 4. Click **Google**, **Outlook**, or **ICS** to export an event
 5. A confirmation message will appear, and the button will be disabled to prevent duplicate exports
 
+### RSVP vs Export
+
+You have two ways to add events to your calendar:
+
+- **RSVP Now** - Click this to go to the event page on Circle.so. Once you RSVP there, you'll receive a calendar invite via email or can use Circle's "Add to Calendar" option. When you click "RSVP Now" in DynaCal, the export buttons will be disabled since you'll manage the calendar invite through the RSVP page.
+
+- **Google / Outlook / ICS** - Use these buttons to directly export to your calendar without going through the RSVP flow. This is useful if you've already RSVP'd on Circle.so but didn't add the calendar invite at that time.
+
+**Note:** Once you've selected "RSVP Now," you will need to manage the calendar invite through the meeting RSVP page on Circle.so.
+
 ## Troubleshooting
 
 ### "Please navigate to the live events page"

@@ -582,13 +582,19 @@ describe('Error handling edge cases', () => {
     await expect(scanPageForEvents()).rejects.toThrow('Failed to scan events');
   });
 
-  test('RSVP nudge onclick opens event URL', () => {
+  test('RSVP nudge onclick opens event URL and disables buttons', async () => {
     const { renderEvents, setExportedEvents } = require('../src/popup');
 
-    document.body.innerHTML = '<div id="event-list"></div>';
+    document.body.innerHTML = '<div id="event-list"></div><div id="toast"></div>';
     setExportedEvents([]);
 
     global.open = jest.fn();
+    mockChrome.storage.local.get.mockImplementation((key, callback) => {
+      callback({ exportedEvents: [] });
+    });
+    mockChrome.storage.local.set.mockImplementation((data, callback) => {
+      if (callback) callback();
+    });
 
     const events = [{
       title: 'Non-RSVP Event',
@@ -601,21 +607,35 @@ describe('Error handling edge cases', () => {
     renderEvents(events);
 
     const nudge = document.querySelector('.rsvp-nudge');
-    nudge.click();
+    await nudge.onclick();
 
     expect(global.open).toHaveBeenCalledWith(
       'https://community.dynamous.ai/c/live-events/non-rsvp-event',
       '_blank'
     );
+
+    // Verify buttons are disabled after RSVP click
+    const googleBtn = document.querySelector('[data-export="google"]');
+    const outlookBtn = document.querySelector('[data-export="outlook"]');
+    const icsBtn = document.querySelector('[data-export="ics"]');
+    expect(googleBtn.disabled).toBe(true);
+    expect(outlookBtn.disabled).toBe(true);
+    expect(icsBtn.disabled).toBe(true);
   });
 
-  test('RSVP nudge handles absolute URL', () => {
+  test('RSVP nudge handles absolute URL', async () => {
     const { renderEvents, setExportedEvents } = require('../src/popup');
 
-    document.body.innerHTML = '<div id="event-list"></div>';
+    document.body.innerHTML = '<div id="event-list"></div><div id="toast"></div>';
     setExportedEvents([]);
 
     global.open = jest.fn();
+    mockChrome.storage.local.get.mockImplementation((key, callback) => {
+      callback({ exportedEvents: [] });
+    });
+    mockChrome.storage.local.set.mockImplementation((data, callback) => {
+      if (callback) callback();
+    });
 
     const events = [{
       title: 'External Event',
@@ -628,7 +648,7 @@ describe('Error handling edge cases', () => {
     renderEvents(events);
 
     const nudge = document.querySelector('.rsvp-nudge');
-    nudge.click();
+    await nudge.onclick();
 
     expect(global.open).toHaveBeenCalledWith('https://example.com/event', '_blank');
   });
