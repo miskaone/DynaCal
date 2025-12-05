@@ -526,7 +526,32 @@ async function initPopup() {
     console.error('Error initializing popup:', error);
     const container = document.getElementById('event-list');
     if (container) {
-      container.innerHTML = `<p class="empty-state">Error: ${error.message}</p>`;
+      // Check if this is a connection error (content script not loaded)
+      if (error.message.includes('Could not establish connection') ||
+          error.message.includes('Receiving end does not exist')) {
+        container.innerHTML = `
+          <div class="wrong-page-message">
+            <p>Please refresh the page to activate the extension.</p>
+            <button id="refresh-btn" style="margin-top: 10px; padding: 8px 16px; cursor: pointer;">
+              Refresh Page
+            </button>
+          </div>
+        `;
+        // Add refresh button handler
+        const refreshBtn = document.getElementById('refresh-btn');
+        if (refreshBtn) {
+          refreshBtn.onclick = () => {
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+              if (tabs[0]) {
+                chrome.tabs.reload(tabs[0].id);
+                window.close();
+              }
+            });
+          };
+        }
+      } else {
+        container.innerHTML = `<p class="empty-state">Error: ${error.message}</p>`;
+      }
     }
   }
 }
